@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0d0814">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>NEON RNNR</title>
+
+  <!-- 1. Favicon for Browser Tabs -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBkMDgxNCIvPjxwb2x5Z29uIHBvaW50cz0iMjU2LDExMCAzOTAsMzkwIDEyMiwzOTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZjBmZiIgc3Ryb2tlLXdpZHRoPSIzNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
+
+  <!-- 2. Apple / Universal Mobile Home Screen Fallback -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBkMDgxNCIvPjxwb2x5Z29uIHBvaW50cz0iMjU2LDExMCAzOTAsMzkwIDEyMiwzOTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZjBmZiIgc3Ryb2tlLXdpZHRoPSIzNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
+
+  <!-- 3. PWA Manifest for Android / Pixel Installation -->
+  <link rel="manifest" href='data:application/manifest+json,{
+    "name": "NEON RNNR",
+    "short_name": "NEON RNNR",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#0d0814",
+    "theme_color": "#0d0814",
+    "icons": [
+      {
+        "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBkMDgxNCIvPjxwb2x5Z29uIHBvaW50cz0iMjU2LDExMCAzOTAsMzkwIDEyMiwzOTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZjBmZiIgc3Ryb2tlLXdpZHRoPSIzNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==",
+        "sizes": "192x192 512x512",
+        "type": "image/svg+xml",
+        "purpose": "any maskable"
+      }
+    ]
+  }'>
+
+  <style>
+    :root {
+      --bg: #0d0814;
+      --surface: #181024;
+      --surface-variant: #231636;
+      --pink: #ff2a85;
+      --pink-glow: rgba(255, 42, 133, 0.4);
+      --cyan: #00f0ff;
+      --cyan-glow: rgba(0, 240, 255, 0.5);
+      --on-surface: #f0e6fc;
+      --on-surface-muted: #a392bd;
+      --outline: #3d295a;
+      --danger: #ff4365;
+      --radius: 12px;
+      --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body {
+      background-color: var(--bg);
+      background-image: 
+        linear-gradient(var(--surface-variant) 1px, transparent 1px),
+        linear-gradient(90deg, var(--surface-variant) 1px, transparent 1px);
+      background-size: 30px 30px;
+      background-position: center center;
+      color: var(--on-surface);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px 16px;
+      padding-top: calc(24px + env(safe-area-inset-top));
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .app-icon {
+      width: 44px;
+      height: 44px;
+      filter: drop-shadow(0 0 10px var(--cyan-glow));
+    }
+
+    .header-titles h1 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #fff;
+      text-shadow: 0 0 10px var(--pink-glow), 0 0 20px var(--pink-glow);
+    }
+
+    .status-badge {
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--cyan);
+      text-shadow: 0 0 5px var(--cyan-glow);
+      margin-top: 2px;
+    }
+
+    .toggle-edit-btn {
+      background: transparent;
+      color: var(--cyan);
+      border: 1px solid var(--cyan);
+      border-radius: var(--radius);
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--cyan-glow);
+      transition: all 0.2s ease;
+    }
+
+    .toggle-edit-btn.active {
+      background: var(--pink);
+      color: #fff;
+      border-color: var(--pink);
+      box-shadow: 0 0 12px var(--pink-glow);
+    }
+
+    .add-form {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .add-form.hidden {
+      display: none;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      background: var(--surface);
+      border: 1px solid var(--outline);
+      color: var(--on-surface);
+      padding: 14px 16px;
+      border-radius: var(--radius);
+      font-size: 1rem;
+      outline: none;
+      user-select: text;
+      -webkit-user-select: text;
+    }
+
+    input[type="text"]:focus {
+      border-color: var(--pink);
+      box-shadow: 0 0 8px var(--pink-glow);
+    }
+
+    .add-btn {
+      background: var(--pink);
+      color: #fff;
+      border: none;
+      border-radius: var(--radius);
+      padding: 0 20px;
+      font-size: 0.9rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 0 10px var(--pink-glow);
+    }
+
+    .checklist {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .item {
+      background: var(--surface);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+
+    .item.checked {
+      opacity: 0.4;
+      border-color: transparent;
+    }
+
+    .checkbox-wrapper {
+      width: 24px;
+      height: 24px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .checkbox-wrapper input {
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .custom-checkbox {
+      width: 24px;
+      height: 24px;
+      border: 2px solid var(--cyan);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 6px var(--cyan-glow);
+      transition: all 0.2s;
+    }
+
+    .checkbox-wrapper input:checked + .custom-checkbox {
+      background: var(--pink);
+      border-color: var(--pink);
+      box-shadow: 0 0 10px var(--pink-glow);
+    }
+
+    .custom-checkbox::after {
+      content: '✓';
+      color: #fff;
+      font-weight: bold;
+      font-size: 14px;
+      display: none;
+    }
+
+    .checkbox-wrapper input:checked + .custom-checkbox::after {
+      display: block;
+    }
+
+    .item-text-label {
+      flex: 1;
+      font-size: 1rem;
+      color: var(--on-surface);
+      word-break: break-word;
+    }
+
+    .item.checked .item-text-label {
+      text-decoration: line-through;
+      color: var(--on-surface-muted);
+    }
+
+    .item-text-input {
+      flex: 1;
+      font-size: 1rem;
+      background: var(--surface-variant);
+      border: 1px solid var(--outline);
+      color: var(--on-surface);
+      padding: 8px 12px;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    .actions {
+      display: flex;
+      gap: 4px;
+    }
+
+    .icon-btn {
+      background: transparent;
+      color: var(--cyan);
+      border: none;
+      padding: 6px 8px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .icon-btn.delete {
+      color: var(--danger);
+    }
+
+    .empty-state {
+      text-align: center;
+      color: var(--on-surface-muted);
+      margin-top: 40px;
+      font-size: 0.95rem;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-left">
+      <!-- Neon Teal Triangle Logo -->
+      <svg class="app-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+        <rect width="512" height="512" rx="100" fill="#0d0814"/>
+        <polygon points="256,110 390,390 122,390" fill="none" stroke="#00f0ff" stroke-width="36" stroke-linejoin="round"/>
+      </svg>
+      <div class="header-titles">
+        <h1>NEON RNNR</h1>
+        <div class="status-badge">Resets Mon 00:00</div>
+      </div>
+    </div>
+    <button class="toggle-edit-btn" id="toggleEditBtn" onclick="toggleEditMode()">Edit</button>
+  </header>
+
+  <div class="add-form hidden" id="addForm">
+    <input type="text" id="newItemInput" placeholder="Add a training task..." autocomplete="off">
+    <button class="add-btn" id="addBtn">Add</button>
+  </div>
+
+  <div class="checklist" id="checklist"></div>
+  <div class="empty-state" id="emptyState" style="display: none;">SYSTEM READY. TAP "EDIT" TO ADD TASKS.</div>
+
+  <script>
+    const STORAGE_ITEMS_KEY = 'neon_rnnr_items_v1';
+    const STORAGE_RESET_KEY = 'neon_rnnr_last_reset_v1';
+
+    let items = JSON.parse(localStorage.getItem(STORAGE_ITEMS_KEY)) || [];
+    let isEditMode = false;
+
+    // --- Reset Logic ---
+    function getMostRecentMonday0000() {
+      const now = new Date();
+      const day = now.getDay();
+      const diffToMonday = (day === 0 ? 6 : day - 1); 
+      
+      const monday = new Date(now);
+      monday.setDate(now.getDate() - diffToMonday);
+      monday.setHours(0, 0, 0, 0);
+      
+      return monday.getTime();
+    }
+
+    function checkAndApplyReset() {
+      const mostRecentMonday = getMostRecentMonday0000();
+      const lastReset = parseInt(localStorage.getItem(STORAGE_RESET_KEY) || '0', 10);
+
+      if (lastReset < mostRecentMonday) {
+        items = items.map(item => ({ ...item, checked: false }));
+        localStorage.setItem(STORAGE_ITEMS_KEY, JSON.stringify(items));
+        localStorage.setItem(STORAGE_RESET_KEY, Date.now().toString());
+        render();
+      }
+    }
+
+    // --- Mode Control ---
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      const btn = document.getElementById('toggleEditBtn');
+      const addForm = document.getElementById('addForm');
+      
+      if (isEditMode) {
+        btn.textContent = 'Done';
+        btn.classList.add('active');
+        addForm.classList.remove('hidden');
+      } else {
+        btn.textContent = 'Edit';
+        btn.classList.remove('active');
+        addForm.classList.add('hidden');
+      }
+      render();
+    }
+
+    // --- State Management ---
+    function saveItems() {
+      localStorage.setItem(STORAGE_ITEMS_KEY, JSON.stringify(items));
+      render();
+    }
+
+    function addItem(text) {
+      if (!text.trim()) return;
+      items.push({ id: Date.now().toString(), text, checked: false });
+      saveItems();
+    }
+
+    function toggleItem(id) {
+      items = items.map(item => item.id === id ? { ...item, checked: !item.checked } : item);
+      saveItems();
+    }
+
+    function updateItemText(id, newText) {
+      items = items.map(item => item.id === id ? { ...item, text: newText } : item);
+      localStorage.setItem(STORAGE_ITEMS_KEY, JSON.stringify(items));
+    }
+
+    function deleteItem(id) {
+      items = items.filter(item => item.id !== id);
+      saveItems();
+    }
+
+    function moveItem(index, direction) {
+      const newIndex = index + direction;
+      if (newIndex < 0 || newIndex >= items.length) return;
+      const [movedItem] = items.splice(index, 1);
+      items.splice(newIndex, 0, movedItem);
+      saveItems();
+    }
+
+    // --- DOM Rendering ---
+    function render() {
+      const checklistEl = document.getElementById('checklist');
+      const emptyStateEl = document.getElementById('emptyState');
+      checklistEl.innerHTML = '';
+
+      if (items.length === 0) {
+        emptyStateEl.style.display = 'block';
+        return;
+      }
+      emptyStateEl.style.display = 'none';
+
+      items.forEach((item, index) => {
+        const itemEl = document.createElement('div');
+        itemEl.className = `item ${item.checked ? 'checked' : ''}`;
+        
+        if (isEditMode) {
+          itemEl.innerHTML = `
+            <input type="text" class="item-text-input" value="${escapeHtml(item.text)}" data-id="${item.id}">
+            <div class="actions">
+              <button class="icon-btn" onclick="moveItem(${index}, -1)" ${index === 0 ? 'style="opacity:0.2"' : ''}>▲</button>
+              <button class="icon-btn" onclick="moveItem(${index}, 1)" ${index === items.length - 1 ? 'style="opacity:0.2"' : ''}>▼</button>
+              <button class="icon-btn delete" onclick="deleteItem('${item.id}')">✕</button>
+            </div>
+          `;
+          const textInput = itemEl.querySelector('.item-text-input');
+          textInput.addEventListener('change', (e) => updateItemText(item.id, e.target.value));
+        } else {
+          itemEl.innerHTML = `
+            <div class="checkbox-wrapper">
+              <input type="checkbox" ${item.checked ? 'checked' : ''} data-id="${item.id}">
+              <div class="custom-checkbox"></div>
+            </div>
+            <span class="item-text-label">${escapeHtml(item.text)}</span>
+          `;
+          itemEl.querySelector('input[type="checkbox"]').addEventListener('change', () => toggleItem(item.id));
+        }
+
+        checklistEl.appendChild(itemEl);
+      });
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    // --- Event Listeners ---
+    document.getElementById('addBtn').addEventListener('click', () => {
+      const input = document.getElementById('newItemInput');
+      addItem(input.value);
+      input.value = '';
+    });
+
+    document.getElementById('newItemInput').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        addItem(e.target.value);
+        e.target.value = '';
+      }
+    });
+
+    window.addEventListener('load', checkAndApplyReset);
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        checkAndApplyReset();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
