@@ -6,16 +6,16 @@
   <meta name="theme-color" content="#0d0814">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>NEON RNNR</title>
+  <title>neon rnnr</title>
 
   <!-- Favicons and Web App Icons -->
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="apple-touch-icon" href="./icon.svg">
 
-  <!-- Manifest with Explicit Relative Paths and Maskable Targets -->
+  <!-- Manifest with Explicit Relative Paths -->
   <link rel="manifest" href='data:application/manifest+json,{
-    "name": "NEON RNNR",
-    "short_name": "NEON RNNR",
+    "name": "neon rnnr",
+    "short_name": "neon rnnr",
     "start_url": "./",
     "scope": "./",
     "display": "standalone",
@@ -103,7 +103,7 @@
       font-size: 1.5rem;
       font-weight: 800;
       letter-spacing: 2px;
-      text-transform: uppercase;
+      text-transform: lowercase;
       color: #fff;
       text-shadow: 0 0 10px var(--pink-glow), 0 0 20px var(--pink-glow);
     }
@@ -111,7 +111,7 @@
     .status-badge {
       font-size: 0.7rem;
       letter-spacing: 1px;
-      text-transform: uppercase;
+      text-transform: lowercase;
       color: var(--cyan);
       text-shadow: 0 0 5px var(--cyan-glow);
       margin-top: 2px;
@@ -305,6 +305,7 @@
       margin-top: 40px;
       font-size: 0.95rem;
       letter-spacing: 0.5px;
+      text-transform: lowercase;
     }
   </style>
 </head>
@@ -312,10 +313,10 @@
 
   <header>
     <div class="header-left">
-      <img src="./icon.svg" class="app-icon" alt="NEON RNNR Logo">
+      <img src="./icon.svg" class="app-icon" alt="neon rnnr logo">
       <div class="header-titles">
-        <h1>NEON RNNR</h1>
-        <div class="status-badge">Resets Mon 00:00</div>
+        <h1>neon rnnr</h1>
+        <div class="status-badge">resets mon 00:00</div>
       </div>
     </div>
     <button class="toggle-edit-btn" id="toggleEditBtn" onclick="toggleEditMode()" aria-label="Edit Mode">
@@ -331,7 +332,7 @@
   </div>
 
   <div class="checklist" id="checklist"></div>
-  <div class="empty-state" id="emptyState" style="display: none;">SYSTEM READY. TAP PENCIL TO ADD TASKS.</div>
+  <div class="empty-state" id="emptyState" style="display: none;">system ready. tap pencil to add tasks.</div>
 
   <script>
     const STORAGE_ITEMS_KEY = 'neon_rnnr_items_v1';
