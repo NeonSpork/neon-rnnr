@@ -6,26 +6,33 @@
   <meta name="theme-color" content="#0d0814">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>neon rnnr</title>
+  <title>NEON RNNR</title>
 
   <!-- Favicons and Web App Icons -->
-  <link rel="icon" type="image/svg+xml" href="icon.svg">
-  <link rel="apple-touch-icon" href="icon.svg">
+  <link rel="icon" type="image/svg+xml" href="./icon.svg">
+  <link rel="apple-touch-icon" href="./icon.svg">
 
-  <!-- Manifest -->
+  <!-- Manifest with Explicit Relative Paths and Maskable Targets -->
   <link rel="manifest" href='data:application/manifest+json,{
-    "name": "neon rnnr",
-    "short_name": "neon rnnr",
+    "name": "NEON RNNR",
+    "short_name": "NEON RNNR",
     "start_url": "./",
+    "scope": "./",
     "display": "standalone",
     "background_color": "#0d0814",
     "theme_color": "#0d0814",
     "icons": [
       {
-        "src": "icon.svg",
-        "sizes": "512x512",
+        "src": "./icon.svg",
+        "sizes": "192x192 512x512",
         "type": "image/svg+xml",
-        "purpose": "any maskable"
+        "purpose": "any"
+      },
+      {
+        "src": "./icon.svg",
+        "sizes": "192x192 512x512",
+        "type": "image/svg+xml",
+        "purpose": "maskable"
       }
     ]
   }'>
@@ -110,16 +117,18 @@
       margin-top: 2px;
     }
 
+    .toggle-edit-btn, .add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
     .toggle-edit-btn {
       background: transparent;
       color: var(--cyan);
       border: 1px solid var(--cyan);
       border-radius: var(--radius);
-      padding: 8px 14px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      padding: 8px 12px;
       cursor: pointer;
       box-shadow: 0 0 10px var(--cyan-glow);
       transition: all 0.2s ease;
@@ -130,6 +139,16 @@
       color: #fff;
       border-color: var(--pink);
       box-shadow: 0 0 12px var(--pink-glow);
+    }
+
+    .toggle-edit-btn svg, .add-btn svg {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .add-form {
@@ -165,11 +184,7 @@
       color: #fff;
       border: none;
       border-radius: var(--radius);
-      padding: 0 20px;
-      font-size: 0.9rem;
-      font-weight: 800;
-      letter-spacing: 1px;
-      text-transform: uppercase;
+      padding: 0 18px;
       cursor: pointer;
       box-shadow: 0 0 10px var(--pink-glow);
     }
@@ -297,22 +312,26 @@
 
   <header>
     <div class="header-left">
-      <img src="icon.svg" class="app-icon" alt="neon rnnr Logo">
+      <img src="./icon.svg" class="app-icon" alt="NEON RNNR Logo">
       <div class="header-titles">
-        <h1>neon rnnr</h1>
-        <div class="status-badge">Resets Mon</div>
+        <h1>NEON RNNR</h1>
+        <div class="status-badge">Resets Mon 00:00</div>
       </div>
     </div>
-    <button class="toggle-edit-btn" id="toggleEditBtn" onclick="toggleEditMode()">Edit</button>
+    <button class="toggle-edit-btn" id="toggleEditBtn" onclick="toggleEditMode()" aria-label="Edit Mode">
+      <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    </button>
   </header>
 
   <div class="add-form hidden" id="addForm">
     <input type="text" id="newItemInput" placeholder="Add a training task..." autocomplete="off">
-    <button class="add-btn" id="addBtn">Add</button>
+    <button class="add-btn" id="addBtn" aria-label="Add Task">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+    </button>
   </div>
 
   <div class="checklist" id="checklist"></div>
-  <div class="empty-state" id="emptyState" style="display: none;">SYSTEM READY. TAP "EDIT" TO ADD TASKS.</div>
+  <div class="empty-state" id="emptyState" style="display: none;">SYSTEM READY. TAP PENCIL TO ADD TASKS.</div>
 
   <script>
     const STORAGE_ITEMS_KEY = 'neon_rnnr_items_v1';
@@ -353,11 +372,11 @@
       const addForm = document.getElementById('addForm');
       
       if (isEditMode) {
-        btn.textContent = 'Done';
+        btn.innerHTML = `<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
         btn.classList.add('active');
         addForm.classList.remove('hidden');
       } else {
-        btn.textContent = 'Edit';
+        btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`;
         btn.classList.remove('active');
         addForm.classList.add('hidden');
       }
