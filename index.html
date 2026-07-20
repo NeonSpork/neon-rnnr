@@ -8,34 +8,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>neon rnnr</title>
 
-  <!-- Favicons and Web App Icons -->
+  <!-- External Manifest File -->
+  <link rel="manifest" href="manifest.json">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="apple-touch-icon" href="./icon.svg">
-
-  <!-- Manifest with Explicit Relative Paths -->
-  <link rel="manifest" href='data:application/manifest+json,{
-    "name": "neon rnnr",
-    "short_name": "neon rnnr",
-    "start_url": "./",
-    "scope": "./",
-    "display": "standalone",
-    "background_color": "#0d0814",
-    "theme_color": "#0d0814",
-    "icons": [
-      {
-        "src": "./icon.svg",
-        "sizes": "192x192 512x512",
-        "type": "image/svg+xml",
-        "purpose": "any"
-      },
-      {
-        "src": "./icon.svg",
-        "sizes": "192x192 512x512",
-        "type": "image/svg+xml",
-        "purpose": "maskable"
-      }
-    ]
-  }'>
 
   <style>
     :root {
@@ -464,6 +440,13 @@
     function escapeHtml(str) {
       if (!str) return '';
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    // --- Service Worker Registration ---
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
     }
 
     // --- Event Listeners ---
