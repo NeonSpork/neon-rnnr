@@ -8,24 +8,22 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>NEON RNNR</title>
 
-  <!-- 1. Favicon for Browser Tabs -->
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBkMDgxNCIvPjxwb2x5Z29uIHBvaW50cz0iMjU2LDExMCAzOTAsMzkwIDEyMiwzOTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZjBmZiIgc3Ryb2tlLXdpZHRoPSIzNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
+  <!-- Favicons and Web App Icons -->
+  <link rel="icon" type="image/svg+xml" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon.svg">
 
-  <!-- 2. Apple / Universal Mobile Home Screen Fallback -->
-  <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBkMDgxNCIvPjxwb2x5Z29uIHBvaW50cz0iMjU2LDExMCAzOTAsMzkwIDEyMiwzOTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZjBmZiIgc3Ryb2tlLXdpZHRoPSIzNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==">
-
-  <!-- 3. PWA Manifest for Android / Pixel Installation -->
+  <!-- Manifest -->
   <link rel="manifest" href='data:application/manifest+json,{
     "name": "NEON RNNR",
     "short_name": "NEON RNNR",
-    "start_url": ".",
+    "start_url": "./",
     "display": "standalone",
     "background_color": "#0d0814",
     "theme_color": "#0d0814",
     "icons": [
       {
-        "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cmVjdCB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiIgcng9IjEwMCIgZmlsbD0iIzBkMDgxNCIvPjxwb2x5Z29uIHBvaW50cz0iMjU2LDExMCAzOTAsMzkwIDEyMiwzOTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0iIzAwZjBmZiIgc3Ryb2tlLXdpZHRoPSIzNiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIvPjwvc3ZnPg==",
-        "sizes": "192x192 512x512",
+        "src": "icon.svg",
+        "sizes": "512x512",
         "type": "image/svg+xml",
         "purpose": "any maskable"
       }
@@ -299,11 +297,7 @@
 
   <header>
     <div class="header-left">
-      <!-- Neon Teal Triangle Logo -->
-      <svg class="app-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-        <rect width="512" height="512" rx="100" fill="#0d0814"/>
-        <polygon points="256,110 390,390 122,390" fill="none" stroke="#00f0ff" stroke-width="36" stroke-linejoin="round"/>
-      </svg>
+      <img src="icon.svg" class="app-icon" alt="NEON RNNR Logo">
       <div class="header-titles">
         <h1>NEON RNNR</h1>
         <div class="status-badge">Resets Mon 00:00</div>
