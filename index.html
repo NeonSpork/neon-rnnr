@@ -3,438 +3,274 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0d0814">
+  <meta name="theme-color" content="#0f0c1b">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>neon rnnr</title>
 
-  <!-- External Manifest File -->
-  <link rel="manifest" href="manifest.json">
+  <link rel="manifest" href="./manifest.json">
   <link rel="icon" type="image/svg+xml" href="./icon.svg">
   <link rel="apple-touch-icon" href="./icon.svg">
 
   <style>
     :root {
-      --bg: #0d0814;
-      --surface: #181024;
-      --surface-variant: #231636;
-      --pink: #ff2a85;
-      --pink-glow: rgba(255, 42, 133, 0.4);
-      --cyan: #00f0ff;
-      --cyan-glow: rgba(0, 240, 255, 0.5);
-      --on-surface: #f0e6fc;
-      --on-surface-muted: #a392bd;
-      --outline: #3d295a;
-      --danger: #ff4365;
+      --bg: #0f0c1b;
+      --surface: #18132a;
+      --surface-variant: #231c3d;
+      --accent-teal: #64ffda;
+      --accent-magenta: #ff4081;
+      --on-surface: #e2e8f0;
+      --on-surface-muted: #807a9e;
+      --outline: #2d254d;
       --radius: 12px;
       --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-user-select: none; }
 
     body {
       background-color: var(--bg);
-      background-image: 
-        linear-gradient(var(--surface-variant) 1px, transparent 1px),
-        linear-gradient(90deg, var(--surface-variant) 1px, transparent 1px);
-      background-size: 30px 30px;
-      background-position: center center;
       color: var(--on-surface);
       font-family: var(--font-family);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
-      padding: 24px 16px;
-      padding-top: calc(24px + env(safe-area-inset-top));
       max-width: 600px;
       margin: 0 auto;
+      padding: 24px 16px;
+      padding-top: calc(24px + env(safe-area-inset-top));
     }
 
-    header {
-      margin-bottom: 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .header-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .app-icon {
-      width: 44px;
-      height: 44px;
-      filter: drop-shadow(0 0 10px var(--cyan-glow));
-    }
-
-    .header-titles h1 {
-      font-size: 1.5rem;
-      font-weight: 800;
-      letter-spacing: 2px;
-      text-transform: lowercase;
-      color: #fff;
-      text-shadow: 0 0 10px var(--pink-glow), 0 0 20px var(--pink-glow);
-    }
-
-    .status-badge {
-      font-size: 0.7rem;
-      letter-spacing: 1px;
-      text-transform: lowercase;
-      color: var(--cyan);
-      text-shadow: 0 0 5px var(--cyan-glow);
-      margin-top: 2px;
-    }
-
-    .toggle-edit-btn, .add-btn {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .toggle-edit-btn {
-      background: transparent;
-      color: var(--cyan);
-      border: 1px solid var(--cyan);
-      border-radius: var(--radius);
-      padding: 8px 12px;
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--cyan-glow);
-      transition: all 0.2s ease;
-    }
-
-    .toggle-edit-btn.active {
-      background: var(--pink);
-      color: #fff;
-      border-color: var(--pink);
-      box-shadow: 0 0 12px var(--pink-glow);
-    }
-
-    .toggle-edit-btn svg, .add-btn svg {
-      width: 18px;
-      height: 18px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2.5;
-      stroke-linecap: round;
-      stroke-linejoin: round;
-    }
-
-    .add-form {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-    }
-
-    .add-form.hidden {
-      display: none;
-    }
-
-    input[type="text"] {
-      flex: 1;
-      background: var(--surface);
-      border: 1px solid var(--outline);
-      color: var(--on-surface);
-      padding: 14px 16px;
-      border-radius: var(--radius);
-      font-size: 1rem;
-      outline: none;
-      user-select: text;
-      -webkit-user-select: text;
-    }
-
-    input[type="text"]:focus {
-      border-color: var(--pink);
-      box-shadow: 0 0 8px var(--pink-glow);
-    }
-
-    .add-btn {
-      background: var(--pink);
-      color: #fff;
-      border: none;
-      border-radius: var(--radius);
-      padding: 0 18px;
-      cursor: pointer;
-      box-shadow: 0 0 10px var(--pink-glow);
-    }
-
-    .checklist {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .item {
-      background: var(--surface);
-      border: 1px solid var(--outline);
-      border-radius: var(--radius);
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.2s;
-    }
-
-    .item.checked {
-      opacity: 0.4;
-      border-color: transparent;
-    }
-
-    .checkbox-wrapper {
-      width: 24px;
-      height: 24px;
-      position: relative;
-      flex-shrink: 0;
-    }
-
-    .checkbox-wrapper input {
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-      position: absolute;
-      z-index: 2;
-    }
-
-    .custom-checkbox {
-      width: 24px;
-      height: 24px;
-      border: 2px solid var(--cyan);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 0 6px var(--cyan-glow);
-      transition: all 0.2s;
-    }
-
-    .checkbox-wrapper input:checked + .custom-checkbox {
-      background: var(--pink);
-      border-color: var(--pink);
-      box-shadow: 0 0 10px var(--pink-glow);
-    }
-
-    .custom-checkbox::after {
-      content: '✓';
-      color: #fff;
-      font-weight: bold;
-      font-size: 14px;
-      display: none;
-    }
-
-    .checkbox-wrapper input:checked + .custom-checkbox::after {
-      display: block;
-    }
-
-    .item-text-label {
-      flex: 1;
-      font-size: 1rem;
-      color: var(--on-surface);
-      word-break: break-word;
-    }
-
-    .item.checked .item-text-label {
-      text-decoration: line-through;
-      color: var(--on-surface-muted);
-    }
-
-    .item-text-input {
-      flex: 1;
-      font-size: 1rem;
-      background: var(--surface-variant);
-      border: 1px solid var(--outline);
-      color: var(--on-surface);
-      padding: 8px 12px;
-      border-radius: 6px;
-      outline: none;
-    }
-
-    .actions {
-      display: flex;
-      gap: 4px;
-    }
+    header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .header-left { display: flex; align-items: center; gap: 12px; }
+    .app-icon { width: 32px; height: 32px; }
+    h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; text-transform: lowercase; }
 
     .icon-btn {
-      background: transparent;
-      color: var(--cyan);
-      border: none;
-      padding: 6px 8px;
-      border-radius: 6px;
-      font-size: 1rem;
+      background: var(--surface);
+      color: var(--accent-teal);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius);
+      padding: 10px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+    .task-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .task-card {
+      background: var(--surface);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius);
+      padding: 16px;
+      display: flex; align-items: center; gap: 12px;
       cursor: pointer;
     }
 
-    .icon-btn.delete {
-      color: var(--danger);
+    .task-card.completed { opacity: 0.5; }
+    .task-card.completed .task-text { text-decoration: line-through; color: var(--on-surface-muted); }
+
+    .checkbox {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid var(--accent-teal);
+      display: flex; align-items: center; justify-content: center;
     }
 
-    .empty-state {
-      text-align: center;
-      color: var(--on-surface-muted);
-      margin-top: 40px;
-      font-size: 0.95rem;
-      letter-spacing: 0.5px;
-      text-transform: lowercase;
+    .task-card.completed .checkbox { background: var(--accent-teal); }
+    .task-text { flex: 1; font-size: 0.95rem; font-weight: 500; }
+
+    /* Modal / Edit Drawer */
+    .modal-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); z-index: 100;
+      align-items: center; justify-content: center; padding: 24px;
     }
+    .modal-overlay.active { display: flex; }
+    .modal-box {
+      background: var(--surface); border: 1px solid var(--outline);
+      border-radius: var(--radius); padding: 20px; width: 100%; max-width: 360px;
+    }
+    .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; text-transform: lowercase; }
+
+    input.task-input {
+      width: 100%; background: var(--surface-variant); border: 1px solid var(--outline);
+      border-radius: 8px; color: var(--on-surface); padding: 12px; font-size: 0.95rem;
+      outline: none; margin-bottom: 16px; user-select: text; -webkit-user-select: text;
+    }
+
+    .modal-actions { display: flex; gap: 8px; }
+    .btn { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--outline); font-weight: 600; cursor: pointer; }
+    .btn-secondary { background: transparent; color: var(--on-surface); }
+    .btn-primary { background: var(--accent-teal); color: #000; border-color: var(--accent-teal); }
+
+    .toast {
+      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--surface-variant); color: var(--on-surface); border: 1px solid var(--outline);
+      padding: 10px 18px; border-radius: 20px; font-size: 0.85rem; pointer-events: none; opacity: 0;
+      transition: all 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); z-index: 200; text-transform: lowercase;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
   </style>
 </head>
 <body>
 
   <header>
     <div class="header-left">
-      <img src="./icon.svg" class="app-icon" alt="neon rnnr logo">
-      <div class="header-titles">
-        <h1>neon rnnr</h1>
-        <div class="status-badge">resets weekly [mon]</div>
-      </div>
+      <img src="./icon.svg" class="app-icon" alt="neon rnnr icon">
+      <h1>neon rnnr</h1>
     </div>
-    <button class="toggle-edit-btn" id="toggleEditBtn" onclick="toggleEditMode()" aria-label="Edit Mode">
-      <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+    <button class="icon-btn" onclick="openAddModal()" aria-label="Add Task">
+      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
     </button>
   </header>
 
-  <div class="add-form hidden" id="addForm">
-    <input type="text" id="newItemInput" placeholder="Add a training task..." autocomplete="off">
-    <button class="add-btn" id="addBtn" aria-label="Add Task">
-      <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-    </button>
+  <div class="task-list" id="taskList"></div>
+
+  <!-- Edit / Add Modal -->
+  <div class="modal-overlay" id="editModal">
+    <div class="modal-box">
+      <div class="modal-title" id="modalTitle">add task</div>
+      <input type="text" class="task-input" id="taskInput" placeholder="Task description..." autocomplete="off">
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeEditModal()">cancel</button>
+        <button class="btn btn-primary" onclick="saveTask()">save</button>
+      </div>
+    </div>
   </div>
 
-  <div class="checklist" id="checklist"></div>
-  <div class="empty-state" id="emptyState" style="display: none;">system ready. tap pencil to add tasks.</div>
+  <div class="toast" id="exitToast">swipe back again to exit</div>
 
   <script>
-    const STORAGE_ITEMS_KEY = 'neon_rnnr_items_v1';
-    const STORAGE_RESET_KEY = 'neon_rnnr_last_reset_v1';
+    const STORAGE_KEY = 'neon_rnnr_pwa_tasks_v1';
+    let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
+      { id: '1', text: 'easy recovery run (30m)', done: false },
+      { id: '2', text: 'interval speed work', done: false },
+      { id: '3', text: 'long run endurance', done: false }
+    ];
 
-    let items = JSON.parse(localStorage.getItem(STORAGE_ITEMS_KEY)) || [];
-    let isEditMode = false;
+    let isModalOpen = false;
+    let editingTaskId = null;
+    let lastBackTime = 0;
+    let toastTimeout = null;
 
-    // --- Reset Logic ---
-    function getMostRecentMonday0000() {
-      const now = new Date();
-      const day = now.getDay();
-      const diffToMonday = (day === 0 ? 6 : day - 1); 
-      
-      const monday = new Date(now);
-      monday.setDate(now.getDate() - diffToMonday);
-      monday.setHours(0, 0, 0, 0);
-      
-      return monday.getTime();
+    function initApp() {
+      checkWeeklyReset();
+      renderTasks();
+      history.replaceState({ modalOpen: false }, '');
     }
 
-    function checkAndApplyReset() {
-      const mostRecentMonday = getMostRecentMonday0000();
-      const lastReset = parseInt(localStorage.getItem(STORAGE_RESET_KEY) || '0', 10);
-
-      if (lastReset < mostRecentMonday) {
-        items = items.map(item => ({ ...item, checked: false }));
-        localStorage.setItem(STORAGE_ITEMS_KEY, JSON.stringify(items));
-        localStorage.setItem(STORAGE_RESET_KEY, Date.now().toString());
-        render();
-      }
-    }
-
-    // --- Mode Control ---
-    function toggleEditMode() {
-      isEditMode = !isEditMode;
-      const btn = document.getElementById('toggleEditBtn');
-      const addForm = document.getElementById('addForm');
-      
-      if (isEditMode) {
-        btn.innerHTML = `<svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`;
-        btn.classList.add('active');
-        addForm.classList.remove('hidden');
+    // Native Back Interceptor
+    window.addEventListener('popstate', (e) => {
+      if (isModalOpen) {
+        closeEditModalDOM();
       } else {
-        btn.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>`;
-        btn.classList.remove('active');
-        addForm.classList.add('hidden');
-      }
-      render();
-    }
-
-    // --- State Management ---
-    function saveItems() {
-      localStorage.setItem(STORAGE_ITEMS_KEY, JSON.stringify(items));
-      render();
-    }
-
-    function addItem(text) {
-      if (!text.trim()) return;
-      items.push({ id: Date.now().toString(), text, checked: false });
-      saveItems();
-    }
-
-    function toggleItem(id) {
-      items = items.map(item => item.id === id ? { ...item, checked: !item.checked } : item);
-      saveItems();
-    }
-
-    function updateItemText(id, newText) {
-      items = items.map(item => item.id === id ? { ...item, text: newText } : item);
-      localStorage.setItem(STORAGE_ITEMS_KEY, JSON.stringify(items));
-    }
-
-    function deleteItem(id) {
-      items = items.filter(item => item.id !== id);
-      saveItems();
-    }
-
-    function moveItem(index, direction) {
-      const newIndex = index + direction;
-      if (newIndex < 0 || newIndex >= items.length) return;
-      const [movedItem] = items.splice(index, 1);
-      items.splice(newIndex, 0, movedItem);
-      saveItems();
-    }
-
-    // --- DOM Rendering ---
-    function render() {
-      const checklistEl = document.getElementById('checklist');
-      const emptyStateEl = document.getElementById('emptyState');
-      checklistEl.innerHTML = '';
-
-      if (items.length === 0) {
-        emptyStateEl.style.display = 'block';
-        return;
-      }
-      emptyStateEl.style.display = 'none';
-
-      items.forEach((item, index) => {
-        const itemEl = document.createElement('div');
-        itemEl.className = `item ${item.checked ? 'checked' : ''}`;
-        
-        if (isEditMode) {
-          itemEl.innerHTML = `
-            <input type="text" class="item-text-input" value="${escapeHtml(item.text)}" data-id="${item.id}">
-            <div class="actions">
-              <button class="icon-btn" onclick="moveItem(${index}, -1)" ${index === 0 ? 'style="opacity:0.2"' : ''}>▲</button>
-              <button class="icon-btn" onclick="moveItem(${index}, 1)" ${index === items.length - 1 ? 'style="opacity:0.2"' : ''}>▼</button>
-              <button class="icon-btn delete" onclick="deleteItem('${item.id}')">✕</button>
-            </div>
-          `;
-          const textInput = itemEl.querySelector('.item-text-input');
-          textInput.addEventListener('change', (e) => updateItemText(item.id, e.target.value));
+        const now = Date.now();
+        if (now - lastBackTime < 2000) {
+          history.back();
         } else {
-          itemEl.innerHTML = `
-            <div class="checkbox-wrapper">
-              <input type="checkbox" ${item.checked ? 'checked' : ''} data-id="${item.id}">
-              <div class="custom-checkbox"></div>
-            </div>
-            <span class="item-text-label">${escapeHtml(item.text)}</span>
-          `;
-          itemEl.querySelector('input[type="checkbox"]').addEventListener('change', () => toggleItem(item.id));
+          lastBackTime = now;
+          history.pushState({ modalOpen: false }, '');
+          showExitToast();
         }
+      }
+    });
 
-        checklistEl.appendChild(itemEl);
+    function showExitToast() {
+      const toast = document.getElementById('exitToast');
+      toast.classList.add('show');
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => { toast.classList.remove('show'); }, 2000);
+    }
+
+    function renderTasks() {
+      const listEl = document.getElementById('taskList');
+      listEl.innerHTML = '';
+
+      tasks.forEach(task => {
+        const card = document.createElement('div');
+        card.className = `task-card ${task.done ? 'completed' : ''}`;
+        card.onclick = () => toggleTask(task.id);
+        card.innerHTML = `
+          <div class="checkbox">
+            ${task.done ? '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' : ''}
+          </div>
+          <div class="task-text">${escapeHtml(task.text)}</div>
+        `;
+        listEl.appendChild(card);
       });
+    }
+
+    function toggleTask(id) {
+      const task = tasks.find(t => t.id === id);
+      if (task) {
+        task.done = !task.done;
+        saveTasks();
+        renderTasks();
+      }
+    }
+
+    function openAddModal() {
+      editingTaskId = null;
+      document.getElementById('modalTitle').innerText = 'add task';
+      document.getElementById('taskInput').value = '';
+      openEditModalDOM();
+    }
+
+    function openEditModalDOM() {
+      isModalOpen = true;
+      document.getElementById('editModal').classList.add('active');
+      history.pushState({ modalOpen: true }, '');
+    }
+
+    function closeEditModalDOM() {
+      isModalOpen = false;
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    function closeEditModal() {
+      history.back();
+    }
+
+    function saveTask() {
+      const input = document.getElementById('taskInput');
+      const text = input.value.trim();
+      if (!text) return;
+
+      if (editingTaskId) {
+        const task = tasks.find(t => t.id === editingTaskId);
+        if (task) task.text = text;
+      } else {
+        tasks.push({ id: Date.now().toString(), text: text, done: false });
+      }
+
+      saveTasks();
+      renderTasks();
+      closeEditModal();
+    }
+
+    function saveTasks() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
+    }
+
+    function checkWeeklyReset() {
+      const RESET_KEY = 'neon_rnnr_last_reset_v1';
+      const lastReset = localStorage.getItem(RESET_KEY);
+      const now = new Date();
+      const currentWeek = `${now.getFullYear()}-W${getWeekNumber(now)}`;
+
+      if (lastReset !== currentWeek) {
+        tasks.forEach(t => t.done = false);
+        saveTasks();
+        localStorage.setItem(RESET_KEY, currentWeek);
+      }
+    }
+
+    function getWeekNumber(d) {
+      d = new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate()));
+      d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay() || 7));
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
     }
 
     function escapeHtml(str) {
@@ -442,35 +278,11 @@
       return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
     }
 
-    // --- Service Worker Registration ---
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').catch(() => {});
-      });
+      window.addEventListener('load', () => { navigator.serviceWorker.register('./sw.js').catch(() => {}); });
     }
 
-    // --- Event Listeners ---
-    document.getElementById('addBtn').addEventListener('click', () => {
-      const input = document.getElementById('newItemInput');
-      addItem(input.value);
-      input.value = '';
-    });
-
-    document.getElementById('newItemInput').addEventListener('keypress', (e) => {
-      if (e.key === 'Enter') {
-        addItem(e.target.value);
-        e.target.value = '';
-      }
-    });
-
-    window.addEventListener('load', checkAndApplyReset);
-    document.addEventListener('visibilitychange', () => {
-      if (document.visibilityState === 'visible') {
-        checkAndApplyReset();
-      }
-    });
-
-    render();
+    initApp();
   </script>
 </body>
 </html>
