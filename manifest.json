@@ -2,7 +2,7 @@
   "id": "./",
   "name": "neon rnnr",
   "short_name": "neon rnnr",
-  "start_url": "./",
+  "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
   "background_color": "#0d0814",
