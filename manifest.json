@@ -1,9 +1,9 @@
 {
-  "id": "/neon-rnnr/",
+  "id": "./",
   "name": "neon rnnr",
   "short_name": "neon rnnr",
-  "start_url": "/neon-rnnr/index.html",
-  "scope": "/neon-rnnr/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#0d0814",
   "theme_color": "#0d0814",
