@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0d0b18">
+  <meta name="theme-color" content="#0a0814">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>neon rnnr</title>
@@ -14,15 +14,17 @@
 
   <style>
     :root {
-      --bg: #0d0b18;
-      --surface: #161228;
-      --surface-variant: #221b3a;
+      --bg: #0a0814;
+      --surface: rgba(22, 17, 40, 0.85);
+      --surface-variant: rgba(36, 27, 66, 0.9);
       --accent-cyan: #00f2fe;
       --accent-pink: #ff007f;
-      --on-surface: #f1f5f9;
-      --on-surface-muted: #8b83ad;
-      --outline: #2e2450;
-      --radius: 12px;
+      --accent-purple: #7928ca;
+      --on-surface: #f8fafc;
+      --on-surface-muted: #94a3b8;
+      --outline: rgba(0, 242, 254, 0.2);
+      --outline-glow: rgba(255, 0, 127, 0.4);
+      --radius: 14px;
       --font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     }
 
@@ -39,94 +41,205 @@
       margin: 0 auto;
       padding: 24px 16px;
       padding-top: calc(24px + env(safe-area-inset-top));
+      position: relative;
+      overflow-x: hidden;
     }
 
+    /* --- Retro Synthwave Grid Background --- */
+    .grid-container {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -2;
+      overflow: hidden;
+      background: radial-gradient(circle at 50% 30%, #1e1035 0%, #0a0814 80%);
+    }
+
+    .grid-floor {
+      position: absolute;
+      width: 200%;
+      height: 200%;
+      top: -50%;
+      left: -50%;
+      background-image: 
+        linear-gradient(to right, rgba(0, 242, 254, 0.12) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(255, 0, 127, 0.12) 1px, transparent 1px);
+      background-size: 40px 40px;
+      transform: perspective(500px) rotateX(60deg);
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0% { transform: perspective(500px) rotateX(60deg) translateY(0); }
+      100% { transform: perspective(500px) rotateX(60deg) translateY(40px); }
+    }
+
+    /* CRT Scanline Effect Overlay */
+    .scanlines {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      z-index: -1;
+      pointer-events: none;
+      background: linear-gradient(
+        rgba(18, 16, 16, 0) 50%, 
+        rgba(0, 0, 0, 0.25) 50%
+      );
+      background-size: 100% 4px;
+    }
+
+    /* --- Header --- */
     header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
     .header-left { display: flex; align-items: center; gap: 12px; }
-    .app-icon { width: 32px; height: 32px; }
-    h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 1px; text-transform: lowercase; color: var(--on-surface); }
+    .app-icon { width: 32px; height: 32px; filter: drop-shadow(0 0 8px var(--accent-cyan)); }
+    
+    h1 { 
+      font-size: 1.5rem; 
+      font-weight: 800; 
+      letter-spacing: 1.5px; 
+      text-transform: lowercase; 
+      color: var(--on-surface);
+      text-shadow: 0 0 10px rgba(0, 242, 254, 0.5);
+    }
 
     .icon-btn {
       background: var(--surface);
       color: var(--accent-pink);
-      border: 1px solid var(--outline);
+      border: 1px solid var(--outline-glow);
       border-radius: var(--radius);
       padding: 10px;
       cursor: pointer;
       display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.2);
       transition: all 0.2s ease;
     }
 
-    .icon-btn:active { transform: scale(0.96); opacity: 0.8; }
-    .icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+    .icon-btn:active { transform: scale(0.95); opacity: 0.8; }
+    .icon-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
 
-    .task-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    /* --- Task List & Glass Cards --- */
+    .task-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+    
     .task-card {
       background: var(--surface);
       border: 1px solid var(--outline);
       border-radius: var(--radius);
       padding: 16px;
-      display: flex; align-items: center; gap: 12px;
+      display: flex; align-items: center; gap: 14px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+      transition: all 0.25s cubic-bezier(0.1, 0.9, 0.2, 1);
     }
 
-    .task-card:active { background: var(--surface-variant); }
+    .task-card:active {
+      transform: scale(0.98);
+      background: var(--surface-variant);
+    }
 
-    .task-card.completed { opacity: 0.45; }
-    .task-card.completed .task-text { text-decoration: line-through; color: var(--on-surface-muted); }
+    .task-card.completed {
+      opacity: 0.5;
+      border-color: rgba(255, 255, 255, 0.05);
+      box-shadow: none;
+    }
+
+    .task-card.completed .task-text {
+      text-decoration: line-through;
+      color: var(--on-surface-muted);
+      text-shadow: none;
+    }
 
     .checkbox {
-      width: 22px; height: 22px; border-radius: 6px;
+      width: 24px; height: 24px; border-radius: 8px;
       border: 2px solid var(--accent-pink);
       display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 0 8px rgba(255, 0, 127, 0.4);
       transition: all 0.2s ease;
     }
 
     .task-card.completed .checkbox {
       background: var(--accent-pink);
       border-color: var(--accent-pink);
+      box-shadow: 0 0 12px rgba(255, 0, 127, 0.8);
     }
 
-    .task-text { flex: 1; font-size: 0.95rem; font-weight: 500; color: var(--on-surface); }
+    .task-text {
+      flex: 1;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--on-surface);
+      letter-spacing: 0.3px;
+    }
 
-    /* Modal / Edit Drawer */
+    /* --- Modals --- */
     .modal-overlay {
       display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
-      background: rgba(0,0,0,0.75); backdrop-filter: blur(4px); z-index: 100;
+      background: rgba(10, 8, 20, 0.85); backdrop-filter: blur(8px); z-index: 100;
       align-items: center; justify-content: center; padding: 24px;
     }
+
     .modal-overlay.active { display: flex; }
+
     .modal-box {
-      background: var(--surface); border: 1px solid var(--outline);
-      border-radius: var(--radius); padding: 20px; width: 100%; max-width: 360px;
+      background: var(--surface);
+      border: 1px solid var(--accent-cyan);
+      box-shadow: 0 0 25px rgba(0, 242, 254, 0.3);
+      border-radius: var(--radius);
+      padding: 24px;
+      width: 100%; max-width: 380px;
     }
-    .modal-title { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; text-transform: lowercase; color: var(--accent-cyan); }
+
+    .modal-title {
+      font-size: 1.15rem; font-weight: 700; margin-bottom: 16px;
+      text-transform: lowercase; color: var(--accent-cyan);
+      text-shadow: 0 0 8px rgba(0, 242, 254, 0.6);
+    }
 
     input.task-input {
-      width: 100%; background: var(--surface-variant); border: 1px solid var(--outline);
-      border-radius: 8px; color: var(--on-surface); padding: 12px; font-size: 0.95rem;
-      outline: none; margin-bottom: 16px; user-select: text; -webkit-user-select: text;
+      width: 100%; background: rgba(10, 8, 20, 0.6); border: 1px solid var(--outline);
+      border-radius: 8px; color: var(--on-surface); padding: 12px 14px; font-size: 1rem;
+      outline: none; margin-bottom: 20px; user-select: text; -webkit-user-select: text;
     }
 
-    input.task-input:focus { border-color: var(--accent-cyan); }
+    input.task-input:focus {
+      border-color: var(--accent-cyan);
+      box-shadow: 0 0 10px rgba(0, 242, 254, 0.4);
+    }
 
-    .modal-actions { display: flex; gap: 8px; }
-    .btn { flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--outline); font-weight: 600; cursor: pointer; }
-    .btn-secondary { background: transparent; color: var(--on-surface); }
-    .btn-primary { background: var(--accent-pink); color: #fff; border-color: var(--accent-pink); }
+    .modal-actions { display: flex; gap: 10px; }
+    
+    .btn {
+      flex: 1; padding: 12px; border-radius: 8px; border: 1px solid var(--outline);
+      font-weight: 700; font-size: 0.9rem; cursor: pointer; text-transform: lowercase;
+    }
 
+    .btn-secondary { background: transparent; color: var(--on-surface-muted); }
+    
+    .btn-primary {
+      background: var(--accent-pink);
+      color: #fff;
+      border-color: var(--accent-pink);
+      box-shadow: 0 0 14px rgba(255, 0, 127, 0.6);
+    }
+
+    /* --- Toast --- */
     .toast {
-      position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(100px);
-      background: var(--surface-variant); color: var(--on-surface); border: 1px solid var(--outline);
-      padding: 10px 18px; border-radius: 20px; font-size: 0.85rem; pointer-events: none; opacity: 0;
+      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(100px);
+      background: var(--surface); color: var(--on-surface); border: 1px solid var(--accent-cyan);
+      box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+      padding: 10px 20px; border-radius: 20px; font-size: 0.85rem; pointer-events: none; opacity: 0;
       transition: all 0.25s cubic-bezier(0.1, 0.9, 0.2, 1); z-index: 200; text-transform: lowercase;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
     }
+
     .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
   </style>
 </head>
 <body>
+
+  <!-- Background Animated Synthwave Grid -->
+  <div class="grid-container">
+    <div class="grid-floor"></div>
+  </div>
+  <div class="scanlines"></div>
 
   <header>
     <div class="header-left">
@@ -157,7 +270,7 @@
   <script>
     const STORAGE_KEY = 'neon_rnnr_pwa_tasks_v1';
     
-    // Updated Default Task List
+    // Custom Default Running Routine
     let tasks = JSON.parse(localStorage.getItem(STORAGE_KEY)) || [
       { id: '1', text: 'Long run', done: false },
       { id: '2', text: 'Intervals OR intense hills', done: false },
